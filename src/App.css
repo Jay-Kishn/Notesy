@@ -1,0 +1,407 @@
+:root {
+  --max-int: 2147483647;
+  --color-active-btn: #0d99ff;
+  --color-disabled-btn: #d9d9d9;
+  --color-light-gray: #f5f5f5;
+}
+
+* {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  outline: transparent;
+  text-decoration: none;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  cursor: inherit;
+}
+
+nav a {
+  display: flex;
+}
+
+nav span {
+  display: block;
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+}
+
+.page-wrapper {
+  height: 100vh;
+}
+
+.page-wrapper.note-mode *:not(.pin) {
+  cursor: url('../public/note-cursor.png') 10 10, cell !important;
+}
+
+header {
+  position: absolute;
+  display: flex;
+  left: 50%;
+  gap: 0.6vw;
+  padding: 16px;
+  margin-top: 1.5vh;
+  border-radius: 200px;
+  background: #FFC47E ;
+  border: 2px solid #EE7214;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transform: translate(-50%, 0);
+  z-index: 1;
+}
+
+header label {
+  color: white;
+  font-size: 1rem;
+}
+
+.toggle {
+  width: 42px;
+  height: 25px;
+  background: #000;
+  border-radius: 500px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.toggle:focus {
+  box-shadow: 0 0 0 2px #000;
+}
+
+.toggle[data-state='checked'] {
+  background: #fff
+}
+
+.switch-thumb {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 9999px;
+  background: #fff;
+  will-change: transform;
+  transition: transform 100ms;
+  transform: translateX(2px);
+  box-shadow: 0 2px 2px var(--blackA7);
+}
+
+.switch-thumb[data-state='checked'] {
+  background: #000;
+  transform: translateX(19px);
+}
+
+.switch-thumb[data-state='checked']::before {
+  content: '';
+  width: 50%;
+  height: 50%;
+  background: #fff;
+  border-radius: 20px 20px 20px 0;
+}
+
+.note {
+  position: absolute;
+  inset: 0 auto auto 0;
+  z-index: var(--max-int);
+}
+
+.create-note-form .pin {
+  height: 100%;
+  cursor: default;
+  top: -2px;
+}
+
+.pin {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pin::before {
+  content: '';
+  position: relative;
+  height: 30px;
+  width: 30px;
+  border-radius: 20px 20px 20px 0px;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 2px 5px;
+  transition: .15s scale ease-in-out;
+}
+
+.note-pin {
+  transform-origin: 50% 50%;
+  animation: .5s ease bounceFade;
+}
+
+.note-pin:hover::before {
+  scale: 1.2;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 2px 5px,
+                0 0 0 2px var(--color-active-btn);
+}
+              
+.note-pin.pin[data-state="open"]::before {
+    box-shadow: rgba(0, 0, 0, 0.5) 0 2px 5px,
+                0 0 0 2px var(--color-active-btn);           
+}
+
+.note-pin::after {
+  content: '';
+  position: absolute;
+  display: block;
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  background: url('https://i.pravatar.cc/300');
+  background-size: contain;
+}
+
+.create-note-form.pin::before {
+  background: var(--color-active-btn);
+}
+
+form {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+form input {
+  height: 3em;
+  width: 100%;
+  max-width: 40vw;
+  padding: 0 3em 0 1.2em;
+  font-size: 0.8em;
+  border: none;
+  border-radius: 6px;
+  box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 5px;
+}
+
+form button {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  right: 4%;
+  width: 1.65em;
+  height: 1.65em;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-disabled-btn);
+  cursor: pointer;
+  transition: background .2s ease-in;
+}
+
+form button.active {
+  background: var(--color-active-btn);
+}
+
+form button:hover, .note-container .comment form button.cancel-button:hover {
+  background: var(--color-active-btn); 
+}
+
+.note-container .comment form button:hover {
+  background: rgba(13, 154, 255, 0.75);
+}
+
+.note-container .comment form button.cancel-button {
+  background: var(--color-disabled-btn);
+}
+
+form button > svg {
+  fill: #fff;
+}
+
+.note-container {
+  --message-header-gap: 0.8em;
+
+  display: flex;
+  flex-direction: column;
+  width: 338px;
+  max-width: 55vw;
+  gap: 1.5em;
+  padding: 1.2em;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 5px;
+}
+
+.note-container, .create-note-content {
+  transform-origin: 50% 50%;
+  animation: .2s ease fadeIn;
+}
+
+
+div[data-radix-popper-content-wrapper] {
+  z-index: var(--max-int) !important;
+}
+
+.note-header {
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 5px;
+}
+
+.note-header .buttons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.comment {
+  --img-size: 1.55em;
+  display: flex;
+  gap: 0.5em;
+  flex-direction: column;
+}
+
+.note-container img {
+  width: var(--img-size, 1.55em);
+  height: var(--img-size, 1.55em);
+  border-radius: 50%;
+}
+
+.comment-header, .form-container {
+  display: flex;
+  align-items: center;
+  gap: var(--message-header-gap);
+}
+
+.comment-header strong {
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.comment-header .date {
+  font-size: 0.8em;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.comment-content {
+  padding-left: calc(var(--message-header-gap) + var(--img-size));
+  word-break: break-word;
+  font-size: 0.8em;
+}
+
+.note-container form {
+  display: flex;
+  height: 3em;
+  align-items: center;
+  justify-content: left;
+}
+
+.note-container .comment form {
+  --form-vertical-space: 8px;
+  display: flex;
+  gap: 5px;
+  padding: 0 var(--form-vertical-space);
+  border: 1px solid var(--color-active-btn);
+  border-radius: 6px;
+}
+
+.note-container .comment form > input {
+  all: unset;
+  flex: 2;
+  font-size: 0.8em;
+  width: 100%;
+  word-break: break-word;
+  padding-left: calc(var(--message-header-gap) + var(--img-size) - var(--form-vertical-space));
+}
+
+.note-container .comment form button {
+  display: flex;
+  position: static;
+  width: 0.9em;
+  height: 0.9em;
+  padding: 0.3em;
+  border-radius: 50%;
+  background-color: var(--color-active-btn);
+}
+
+.note-container .comment form button > svg {
+  height: 100%;
+  width: 100%;
+  fill: #fff;
+}
+
+.note-container form input {
+  background: var(--color-light-gray);
+  box-shadow: none;
+}
+
+.edit-button-container {
+  display: flex;
+  justify-content: flex-end;
+  flex: 2;
+}
+
+.note-icons-btn {
+  display: flex;
+  aspect-ratio: 1;
+  padding: 6px;
+  border-radius: 2px;
+}
+
+.note-icons-btn:hover {
+  background: var(--color-light-gray);
+}
+
+.edit-button[data-state="open"] {
+  background-color: var(--color-active-btn);
+}
+
+.edit-button[data-state="open"] svg {
+  color: #fff;
+}
+
+.edit-button[data-state="closed"]:hover {
+  background: var(--color-light-gray);
+}
+
+.edit-content {
+  position: relative;
+  color: #fff;
+  background: #000;
+  padding: 8px 0;
+  border-radius: 2px;
+  box-shadow: rgba(14, 18, 22, 0.35) 0px 10px 38px -10px, 
+              rgba(14, 18, 22, 0.2) 0px 10px 20px -15px;
+}
+
+.edit-content::before {
+  position: absolute;
+  content: '';
+  top: -5px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent; 
+  border-bottom: 5px solid #000;
+  transform: translateX(-50%);
+}
+
+.drop-down-item {
+  font-size: 12px;
+  padding: 4px 30px;
+}
+
+.drop-down-item:hover {
+  background: var(--color-active-btn);
+}
+
